@@ -21,7 +21,7 @@ php:
 app:
     image: php:fpm
     volumes:
-        - ./html:/var/www/html
+        - /home/wyu4/develop:/var/www/html
     command: "true"
 
 mariadb:
