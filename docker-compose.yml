@@ -1,0 +1,50 @@
+nginx:
+    build: ./nginx 
+    ports:
+        - 80:80
+    links:
+        - php
+    volumes:
+        - ./nginx/conf.d:/etc/nginx/conf.d
+    volumes_from:
+        - app
+
+php:
+    build: ./php 
+    expose:
+        - 9000
+    links:
+        - mariadb
+    volumes_from:
+        - app
+
+app:
+    image: php:fpm
+    volumes:
+        - ./html:/var/www/html
+    command: "true"
+
+mariadb:
+    image: mariadb:latest
+    volumes_from:
+        - data
+    environment:
+        MYSQL_ROOT_PASSWORD: secret
+        MYSQL_DATABASE: project
+        MYSQL_USER: project
+        MYSQL_PASSWORD: project
+        
+data:
+    image: mariadb:latest
+    volumes:
+        - /var/lib/mysql
+    command: "true"
+
+phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+        - 8080:80
+    links:
+        - mariadb
+    environment:
+        PMA_HOST: mariadb
